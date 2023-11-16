@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>KC TOILETS</title>
+    </head>
+    <body>
+        <div id="test">
+            <h1>TOILETTES PUBLIQUES NANTES</h1>
+            <iframe src="https://data.nantesmetropole.fr/explore/embed/dataset/244400404_toilettes-publiques-nantes-metropole/map/?disjunctive.pole&disjunctive.commune&location=11,47.26199,-1.57516&basemap=jawg.streets&static=false&datasetcard=false&scrollWheelZoom=false" width="400" height="300" frameborder="0"></iframe>
+            <table>
+                <thead>
+                    <th>NOM</th>
+                    <th>POLE</th>
+                    <th>COMMUNE</th>
+                    <th>MAP</th>
+                </thead>
+                <tr v-for="toilet in commits">
+                    <td>{{toilet.nom}}</td>
+                    <td>{{toilet.pole}}</td>
+                    <td>{{toilet.commune}}</td>
+                    <td><iframe
+                        width="300"
+                        height="170"
+                        frameborder="0"
+                        marginheight="0"
+                        marginwidth="0"
+                        :src="`https://maps.google.com/maps?q=${toilet.geo_shape.geometry.coordinates[1]},${toilet.geo_shape.geometry.coordinates[0]}&hl=fr&z=14&amp;output=embed`"
+                >
+                </iframe></td>
+                </tr>
+            </table>
+
+            <h3>WHAT'S THE COLOR ??</h3>
+            <h1>BLUUUUUEEEEE</h1>
+        </div>
+
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://unpkg.com/vue@3"></script>
+        <script>
+            const apiURL = "https://data.nantesmetropole.fr/api/explore/v2.1/catalog/datasets/244400404_toilettes-publiques-nantes-metropole/records?limit=65";
+            const config = {};
+
+            Vue.createApp({
+                data() {
+                    return {
+                        commits: [],
+                    }
+                },
+
+                created: function () {
+					this.fetchDataPromise();
+				},
+
+
+                methods: {
+                    fetchDataPromise: async function () {
+                        try {
+                            const response = await axios.get(apiURL);
+							//this.commits = response.data.filter((a) => a.commit.author.name === "Evan You");
+                            this.commits = response.data.results;
+                            console.log(this.commits);
+                        } catch (error) {
+							console.log(error);
+                        }
+					},
+                },
+            }).mount("#test");
+        </script>
+    </body>
+</html>
