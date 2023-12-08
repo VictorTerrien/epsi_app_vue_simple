@@ -3,20 +3,24 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 		<title>KC TOILETS</title>
     </head>
     <body>
-        <div id="test">
-            <h1>TOILETTES PUBLIQUES NANTES</h1>
-            <iframe src="https://data.nantesmetropole.fr/explore/embed/dataset/244400404_toilettes-publiques-nantes-metropole/map/?disjunctive.pole&disjunctive.commune&location=11,47.26199,-1.57516&basemap=jawg.streets&static=false&datasetcard=false&scrollWheelZoom=false" width="400" height="300" frameborder="0"></iframe>
-            <table>
+        <div id="toilet" class="container">
+            <p class="h1 text-center">TOILETTES PUBLIQUES NANTES</p>
+            <div class="d-flex justify-content-center">
+                <iframe src="https://data.nantesmetropole.fr/explore/embed/dataset/244400404_toilettes-publiques-nantes-metropole/map/?disjunctive.pole&disjunctive.commune&location=11,47.26199,-1.57516&basemap=jawg.streets&static=false&datasetcard=false&scrollWheelZoom=false" width="400" height="300" frameborder="0" style="margin: 20px;"></iframe>
+            </div>
+            <input class="form-control" type="text" v-model="search" @input="updateSearch" placeholder="Rechercher un nom, un pole ou un code postal">
+            <table class="table table-striped table-hover">
                 <thead>
                     <th>NOM</th>
                     <th>POLE</th>
                     <th>COMMUNE</th>
                     <th>MAP</th>
                 </thead>
-                <tr v-for="toilet in commits">
+                <tr v-for="toilet in commits" class="align-middle">
                     <td>{{toilet.nom}}</td>
                     <td>{{toilet.pole}}</td>
                     <td>{{toilet.commune}}</td>
@@ -31,9 +35,6 @@
                 </iframe></td>
                 </tr>
             </table>
-
-            <h3>WHAT'S THE COLOR ??</h3>
-            <h1>BLUUUUUEEEEE</h1>
         </div>
 
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -45,6 +46,7 @@
             Vue.createApp({
                 data() {
                     return {
+                        search: '',
                         commits: [],
                     }
                 },
@@ -53,12 +55,16 @@
 					this.fetchDataPromise();
 				},
 
+                computed: {
+                    searchResults() {
+                        
+                    }
+                }
 
                 methods: {
                     fetchDataPromise: async function () {
                         try {
                             const response = await axios.get(apiURL);
-							//this.commits = response.data.filter((a) => a.commit.author.name === "Evan You");
                             this.commits = response.data.results;
                             console.log(this.commits);
                         } catch (error) {
@@ -66,7 +72,7 @@
                         }
 					},
                 },
-            }).mount("#test");
+            }).mount("#toilet");
         </script>
     </body>
 </html>
